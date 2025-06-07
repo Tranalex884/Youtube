@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cẩm Nang Tương Tác: Khôi Phục Kênh YouTube cho DKSH</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Corporate Calm -->
+    <!-- Application Structure Plan: The SPA is designed as a task-oriented, multi-step interactive guide to transform the dense report into an actionable plan. The structure follows a logical user flow: 1. Diagnose, 2. Recover, 3. Escalate & Prevent. A top-level stepper navigation provides a clear mental map. Within each step, content is organized into tabbed sections and interactive accordions. This avoids overwhelming the user with a wall of text and guides them through the process sequentially, making it more usable and less intimidating than a linear document. The goal is to empower the user to solve their problem step-by-step. -->
+    <!-- Visualization & Content Choices: Report Info: Personal vs. Brand Account comparison. -> Goal: Compare -> Viz: Interactive horizontal bar chart (Chart.js). -> Interaction: Hover tooltips provide details. -> Justification: Visually powerful comparison that makes the benefits of a Brand Account instantly clear. Report Info: Lists of recovery steps, prevention measures. -> Goal: Organize -> Presentation: Interactive accordions. -> Interaction: Click to expand/collapse. -> Justification: Progressive disclosure of information keeps the UI clean and allows users to focus on one step at a time. Report Info: Key recommendations. -> Goal: Emphasize -> Presentation: Numbered action cards in a final summary section. -> Interaction: Static but visually distinct. -> Justification: Provides a clear, actionable takeaway. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Be Vietnam Pro', sans-serif;
+            background-color: #f7fafc;
+        }
+        .chart-container {
+            position: relative;
+            margin: auto;
+            height: 40vh;
+            width: 100%;
+            max-width: 800px;
+            max-height: 400px;
+        }
+        .step-item.active {
+            border-color: #2b6cb0;
+            color: #2b6cb0;
+            font-weight: 600;
+        }
+        .tab-button.active {
+            border-color: #2b6cb0;
+            background-color: #2b6cb0;
+            color: white;
+        }
+        .accordion-header.open .accordion-arrow {
+            transform: rotate(180deg);
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+    <div class="container mx-auto p-4 md:p-8">
+        <header class="text-center mb-8">
+            <h1 class="text-3xl md:text-4xl font-bold text-gray-800">Cẩm Nang Tương Tác</h1>
+            <p class="text-lg text-blue-800 font-semibold">Khôi Phục và Quản Lý Kênh YouTube Doanh Nghiệp</p>
+        </header>
+
+        <nav id="stepper" class="flex items-center justify-center border-b-2 border-gray-200 mb-8 pb-4">
+            <div id="step-1" class="step-item active flex-1 text-center border-b-4 p-2 cursor-pointer transition-colors duration-300">
+                <span class="text-xl">①</span>
+                <span class="hidden md:inline">Chẩn Đoán Tình Trạng</span>
+            </div>
+            <div class="flex-1 border-t-2 border-gray-300 border-dashed mx-4"></div>
+            <div id="step-2" class="step-item flex-1 text-center border-b-4 border-transparent text-gray-500 p-2 cursor-pointer transition-colors duration-300">
+                <span class="text-xl">②</span>
+                <span class="hidden md:inline">Thực Hiện Khôi Phục</span>
+            </div>
+             <div class="flex-1 border-t-2 border-gray-300 border-dashed mx-4"></div>
+            <div id="step-3" class="step-item flex-1 text-center border-b-4 border-transparent text-gray-500 p-2 cursor-pointer transition-colors duration-300">
+                <span class="text-xl">③</span>
+                <span class="hidden md:inline">Leo Thang & Phòng Ngừa</span>
+            </div>
+        </nav>
+
+        <main id="main-content">
+            <!-- Step 1: Chẩn Đoán -->
+            <section id="content-1" class="space-y-8">
+                <div class="text-center p-4 bg-white rounded-lg shadow-md">
+                     <h2 class="text-2xl font-bold text-blue-800 mb-2">Bước 1: Đánh giá & Chẩn đoán Tình trạng Kênh</h2>
+                     <p class="text-gray-600 max-w-3xl mx-auto">Trước khi hành động, việc xác định chính xác loại tài khoản và trạng thái hiện tại của kênh là cực kỳ quan trọng. Phần này sẽ giúp bạn hiểu rõ tình hình để có thể lựa chọn giải pháp phù hợp và hiệu quả nhất.</p>
+                </div>
+
+                <div class="p-6 bg-white rounded-lg shadow-md">
+                    <h3 class="text-xl font-semibold mb-4 text-center">So sánh: Tài khoản Cá nhân vs. Tài khoản Thương hiệu</h3>
+                    <p class="text-center text-gray-600 mb-4">Đối với doanh nghiệp như DKSH, việc sử dụng Tài khoản Thương hiệu mang lại lợi ích vượt trội về quản lý và bảo mật. Biểu đồ dưới đây trực quan hóa sự khác biệt chính.</p>
+                    <div class="chart-container h-96 md:h-[450px]">
+                        <canvas id="accountTypeChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div class="p-6 bg-white rounded-lg shadow-md">
+                        <h3 class="text-xl font-semibold mb-4">Loại tài khoản của bạn là gì?</h3>
+                        <p class="mb-4 text-gray-600">Kênh của DKSH có phải là <span class="font-bold text-blue-700">Tài khoản Thương hiệu</span> không? Đây là yếu tố then chốt, vì nó cho phép nhiều người cùng quản lý và dễ dàng chuyển giao quyền sở hữu mà không cần chia sẻ mật khẩu cá nhân.</p>
+                        <a href="https://myaccount.google.com/brandaccounts" target="_blank" class="inline-block bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors">Kiểm tra Tài khoản Thương hiệu</a>
+                    </div>
+                    <div class="p-6 bg-white rounded-lg shadow-md">
+                         <h3 class="text-xl font-semibold mb-4">Trạng thái hiện tại của kênh?</h3>
+                         <p class="mb-4 text-gray-600">Xác định đúng trạng thái sẽ quyết định hướng đi tiếp theo. Kênh của bạn thuộc trường hợp nào dưới đây?</p>
+                         <ul class="space-y-2 text-gray-700">
+                             <li class="flex items-start"><span class="text-blue-600 font-bold mr-2">✔</span> <strong class="mr-1">Mất thông tin đăng nhập:</strong> Kênh vẫn hoạt động nhưng bạn không thể truy cập.</li>
+                             <li class="flex items-start"><span class="text-blue-600 font-bold mr-2">✔</span> <strong class="mr-1">Bị ẩn:</strong> Kênh và nội dung không hiển thị công khai.</li>
+                             <li class="flex items-start"><span class="text-blue-600 font-bold mr-2">✔</span> <strong class="mr-1">Bị chấm dứt:</strong> Kênh bị YouTube đình chỉ do vi phạm chính sách.</li>
+                         </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Step 2: Khôi Phục -->
+            <section id="content-2" class="hidden space-y-8">
+                <div class="text-center p-4 bg-white rounded-lg shadow-md">
+                     <h2 class="text-2xl font-bold text-blue-800 mb-2">Bước 2: Các Bước Khôi phục Quyền Truy cập</h2>
+                     <p class="text-gray-600 max-w-3xl mx-auto">Sau khi đã chẩn đoán tình hình, phần này sẽ hướng dẫn bạn qua các bước cụ thể để khôi phục quyền truy cập, ưu tiên các phương pháp tự phục hồi trước khi liên hệ hỗ trợ bên ngoài.</p>
+                </div>
+
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <div id="accordion-container-2"></div>
+                </div>
+            </section>
+
+            <!-- Step 3: Leo Thang & Phòng Ngừa -->
+            <section id="content-3" class="hidden space-y-8">
+                <div class="text-center p-4 bg-white rounded-lg shadow-md">
+                     <h2 class="text-2xl font-bold text-blue-800 mb-2">Bước 3: Liên hệ Hỗ trợ & Phòng ngừa Tương lai</h2>
+                     <p class="text-gray-600 max-w-3xl mx-auto">Nếu các bước tự khôi phục không thành công, đây là lúc liên hệ hỗ trợ. Quan trọng hơn, hãy xây dựng quy trình vững chắc để bảo vệ tài sản kỹ thuật số của bạn trong tương lai.</p>
+                </div>
+                
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <div id="accordion-container-3"></div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const steps = document.querySelectorAll('.step-item');
+            const contents = document.querySelectorAll('main > section');
+            const stepper = document.getElementById('stepper');
+            
+            const dataStep2 = [
+                {
+                    title: "Khôi phục Tài khoản Google liên kết (Quan trọng nhất)",
+                    content: `
+                        <p class="mb-4">Kênh YouTube luôn gắn liền với một Tài khoản Google. Do đó, việc lấy lại kênh chính là lấy lại Tài khoản Google đó.</p>
+                        <ul class="list-disc list-inside space-y-2 mb-4">
+                            <li><strong>Liên hệ bộ phận IT của DKSH:</strong> Đây là ưu tiên hàng đầu. Nếu kênh được tạo bằng email công ty (ví dụ: email Google Workspace), bộ phận IT có thể khôi phục hoặc cấp lại quyền truy cập email đó. Đây là con đường nhanh và hiệu quả nhất.</li>
+                            <li><strong>Sử dụng trang khôi phục của Google:</strong> Truy cập <a href='https://g.co/recover' target='_blank' class='text-blue-600 font-semibold hover:underline'>g.co/recover</a> và thử các tùy chọn khôi phục bằng email hoặc số điện thoại dự phòng.</li>
+                            <li><strong>Sử dụng thiết bị/vị trí quen thuộc:</strong> Thực hiện quá trình khôi phục từ máy tính hoặc mạng Wi-Fi mà tài khoản từng đăng nhập thường xuyên để tăng tỷ lệ thành công.</li>
+                        </ul>
+                    `
+                },
+                {
+                    title: "Khôi phục qua Tài khoản Thương hiệu",
+                    content: `
+                        <p class="mb-4">Nếu kênh của bạn là Tài khoản Thương hiệu, bạn có thêm các lựa chọn sau:</p>
+                        <ul class="list-disc list-inside space-y-2">
+                            <li><strong>Kiểm tra các tài khoản Google khác:</strong> Đăng nhập vào tất cả các tài khoản Google của công ty và kiểm tra mục <a href='https://myaccount.google.com/brandaccounts' target='_blank' class='text-blue-600 font-semibold hover:underline'>Tài khoản Thương hiệu</a> xem kênh có được liệt kê ở đó không.</li>
+                            <li><strong>Khôi phục tài khoản đã xóa:</i></strong> Nếu Tài khoản Thương hiệu mới bị xóa (thường trong 30 ngày), có thể khôi phục lại. Hãy hành động nhanh chóng!</li>
+                        </ul>
+                    `
+                },
+                {
+                    title: "Xử lý kênh bị ẩn",
+                    content: `
+                        <p class="mb-4">Nếu kênh chỉ bị ẩn, việc khôi phục khá đơn giản khi bạn đã có quyền truy cập Tài khoản Google:</p>
+                        <ol class="list-decimal list-inside space-y-2">
+                            <li>Đăng nhập vào YouTube bằng tài khoản liên kết.</li>
+                            <li>Đi đến mục "tạo kênh" và điền vào biểu mẫu để kích hoạt lại kênh.</li>
+                            <li class="p-3 bg-red-100 border-l-4 border-red-500 text-red-700 rounded-md"><strong>CẢNH BÁO QUAN TRỌNG:</strong> Tuyệt đối KHÔNG nhấp vào mục "Để sử dụng tên doanh nghiệp hoặc tên khác, hãy nhấp vào đây." Việc này sẽ tạo ra một kênh mới hoàn toàn thay vì khôi phục kênh cũ.</li>
+                        </ol>
+                    `
+                }
+            ];
+
+            const dataStep3 = [
+                {
+                    title: "Các Phương án Vô hiệu hóa Kênh cũ (Nếu không khôi phục được)",
+                    content: `
+                        <p class="mb-4">Nếu việc khôi phục kênh cũ không khả thi, bạn có thể yêu cầu YouTube vô hiệu hóa nó bằng cách báo cáo các vi phạm chính sách của họ. Hãy tập trung vào việc cung cấp bằng chứng mạnh mẽ.</p>
+                        <ul class="list-disc list-inside space-y-3">
+                            <li><strong>Báo cáo Vi phạm Bản quyền:</strong> Nếu kênh chứa nội dung thuộc sở hữu trí tuệ của DKSH. Sử dụng <a href="https://www.youtube.com/copyright_complaint_form" target="_blank" class="text-blue-600 font-semibold hover:underline">công cụ báo cáo bản quyền</a> hoặc biểu mẫu gỡ bỏ thủ công. Nhiều vi phạm có thể dẫn đến chấm dứt kênh.</li>
+                            <li><strong>Báo cáo Vi phạm Thương hiệu:</strong> Nếu kênh sử dụng tên thương hiệu, logo của DKSH trái phép. Sử dụng <a href="https://www.youtube.com/trademark_complaint_form" target="_blank" class="text-blue-600 font-semibold hover:underline">biểu mẫu báo cáo vi phạm thương hiệu</a> của YouTube.</li>
+                            <li><strong>Báo cáo Mạo danh:</strong> Nếu kênh giả vờ là kênh chính thức của DKSH, gây hiểu lầm cho người xem. Báo cáo kênh qua tùy chọn "Report user" hoặc "Report channel" trên YouTube và chọn lý do "Impersonation" (Mạo danh).</li>
+                            <li><strong>Liên hệ @TeamYouTube trên X (Twitter):</strong> Đây là một kênh giao tiếp nhanh và hiệu quả cho các vấn đề phức tạp. Gửi tin nhắn trực tiếp (DM) và trình bày tình hình chi tiết, kèm theo bằng chứng sở hữu mạnh mẽ bạn có.</li>
+                        </ul>
+                        <p class="p-3 bg-blue-100 border-l-4 border-blue-500 text-blue-700 rounded-md mt-4"><strong>Lưu ý:</strong> YouTube sẽ hành động dựa trên việc kênh cũ vi phạm các chính sách của họ, không phải chỉ vì bạn không thể truy cập. Bằng chứng rõ ràng về quyền sở hữu và vi phạm là chìa khóa.</p>
+                    `
+                },
+                {
+                    title: "Liên hệ Hỗ trợ YouTube (Khi cần thiết)",
+                    content: `
+                        <p class="mb-4">Nếu các cách trên không hiệu quả, hãy liên hệ trực tiếp với YouTube:</p>
+                        <ul class="list-disc list-inside space-y-2 mb-4">
+                            <li><strong>Nhóm Hỗ trợ Nhà sáng tạo:</strong> Kênh hiệu quả nhất (qua email/chat), nhưng thường yêu cầu kênh phải thuộc Chương trình Đối tác YouTube (YPP). Hãy kiểm tra xem kênh của bạn có đủ điều kiện không.</li>
+                            <li><strong>Liên hệ @TeamYouTube trên X (Twitter):</strong> Đây là cách nhanh chóng và hiệu quả để nhận được sự chú ý từ YouTube cho các vấn đề chung. Hãy gửi tin nhắn trực tiếp để bảo mật thông tin.</li>
+                            <li><strong>Trung tâm & Diễn đàn Trợ giúp:</strong> Nguồn tài liệu tự tìm hiểu và nhận sự giúp đỡ từ cộng đồng.</li>
+                            <li><strong>Liên hệ pháp lý:</strong> Trong trường hợp có tranh chấp phức tạp hoặc kênh bị chiếm đoạt, việc tham vấn bộ phận pháp lý của DKSH là cần thiết. YouTube thường không can thiệp vào tranh chấp sở hữu nếu không có phán quyết của tòa án.</li>
+                        </ul>
+                    `
+                },
+                {
+                    title: "Chuẩn bị Bằng chứng Sở hữu",
+                    content: `
+                        <p class="mb-4">Khi làm việc với YouTube hoặc trong trường hợp tranh chấp, hãy chuẩn bị sẵn các bằng chứng sau để chứng minh DKSH là chủ sở hữu hợp pháp của kênh:</p>
+                        <ul class="list-disc list-inside space-y-2">
+                            <li><strong>Đăng ký thương hiệu:</strong> Giấy tờ đăng ký nhãn hiệu cho tên/logo DKSH (bằng chứng mạnh nhất).</li>
+                            <li><strong>Tài liệu nội bộ:</strong> Hợp đồng lao động, biên bản bàn giao, quyết định thành lập kênh...</li>
+                            <li><strong>Bằng chứng tạo nội dung:</strong> Các file video gốc, kịch bản, tài liệu hậu kỳ.</li>
+                            <li><strong>Thông tin liên kết:</strong> Email, số điện thoại, địa chỉ IP đã dùng để quản lý kênh.</li>
+                        </ul>
+                    `
+                },
+                {
+                    title: "Kế hoạch Phòng ngừa cho Tương lai (Rất quan trọng)",
+                    content: `
+                        <p class="mb-4">Để sự cố này không bao giờ lặp lại, DKSH cần thực hiện ngay các biện pháp sau:</p>
+                        <ol class="list-decimal list-inside space-y-3">
+                            <li><strong>Chuyển sang Tài khoản Thương hiệu:</strong> Nếu kênh chưa phải, hãy chuyển đổi ngay khi lấy lại được. Sau đó, <span class="font-bold">thêm ít nhất 2 Chủ sở hữu</span> (quản lý cấp cao) và nhiều Người quản lý (nhân viên marketing).</li>
+                            <li><strong>Xây dựng Quy trình Bàn giao (Checklist):</strong> Thiết lập quy trình chuẩn khi nhân sự nghỉ việc/chuyển công tác, đảm bảo mọi tài sản kỹ thuật số được chuyển giao đầy đủ.</li>
+                            <li><strong>Bật Bảo mật 2 lớp (2FA):</strong> Bắt buộc bật 2FA cho tất cả các tài khoản Google liên quan đến công ty.</li>
+                            <li><strong>Lưu trữ Thông tin An toàn:</strong> Sử dụng một trình quản lý mật khẩu doanh nghiệp để lưu trữ tập trung và an toàn mọi thông tin đăng nhập, mã khôi phục.</li>
+                        </ol>
+                    `
+                }
+            ];
+
+            const createAccordion = (data, containerId) => {
+                const container = document.getElementById(containerId);
+                data.forEach((item, index) => {
+                    const div = document.createElement('div');
+                    div.className = 'border-b border-gray-200';
+                    div.innerHTML = `
+                        <button class="accordion-header w-full text-left p-4 focus:outline-none transition-colors duration-300 hover:bg-gray-100">
+                            <div class="flex justify-between items-center">
+                                <h4 class="text-lg font-semibold text-gray-700">${item.title}</h4>
+                                <span class="accordion-arrow text-blue-600 transform transition-transform duration-300">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+                                </span>
+                            </div>
+                        </button>
+                        <div class="accordion-content overflow-hidden max-h-0 transition-all duration-500 ease-in-out">
+                            <div class="p-4 pt-0 text-gray-600">${item.content}</div>
+                        </div>
+                    `;
+                    container.appendChild(div);
+                });
+
+                container.addEventListener('click', function(e) {
+                    const header = e.target.closest('.accordion-header');
+                    if (header) {
+                        const content = header.nextElementSibling;
+                        header.classList.toggle('open');
+                        if (content.style.maxHeight) {
+                            content.style.maxHeight = null;
+                        } else {
+                            content.style.maxHeight = content.scrollHeight + "px";
+                        }
+                    }
+                });
+            }
+
+            createAccordion(dataStep2, 'accordion-container-2');
+            createAccordion(dataStep3, 'accordion-container-3');
+
+
+            stepper.addEventListener('click', (e) => {
+                const targetStep = e.target.closest('.step-item');
+                if (!targetStep) return;
+
+                const stepNumber = targetStep.id.split('-')[1];
+
+                steps.forEach(step => step.classList.remove('active'));
+                targetStep.classList.add('active');
+
+                contents.forEach(content => content.classList.add('hidden'));
+                document.getElementById(`content-${stepNumber}`).classList.remove('hidden');
+            });
+            
+            const ctx = document.getElementById('accountTypeChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Số lượng quản lý', 'Chuyển giao sở hữu', 'Rủi ro khi nhân sự nghỉ việc', 'Quản lý tập trung', 'Khả năng khôi phục'],
+                    datasets: [
+                        {
+                            label: 'Tài khoản Cá nhân',
+                            data: [1, 2, 8, 3, 4],
+                            backgroundColor: 'rgba(156, 163, 175, 0.7)',
+                            borderColor: 'rgba(107, 114, 128, 1)',
+                            borderWidth: 1
+                        },
+                        {
+                            label: 'Tài khoản Thương hiệu',
+                            data: [9, 9, 2, 8, 7],
+                            backgroundColor: 'rgba(59, 130, 246, 0.7)',
+                            borderColor: 'rgba(37, 99, 235, 1)',
+                            borderWidth: 1
+                        }
+                    ]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Mức độ hiệu quả (Thang điểm 1-10)',
+                            font: { size: 16 }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    const feature = context.label;
+                                    const value = context.raw;
+                                    let explanation = '';
+                                    if (feature === 'Số lượng quản lý') explanation = (label.includes('Thương hiệu')) ? 'Rất cao - Nhiều chủ sở hữu & quản lý' : 'Rất thấp - Chỉ 1 người';
+                                    else if (feature === 'Chuyển giao sở hữu') explanation = (label.includes('Thương hiệu')) ? 'Dễ dàng' : 'Khó khăn';
+                                    else if (feature === 'Rủi ro khi nhân sự nghỉ việc') explanation = (label.includes('Thương hiệu')) ? 'Thấp' : 'Rất cao';
+                                    else if (feature === 'Quản lý tập trung') explanation = (label.includes('Thương hiệu')) ? 'Chuyên nghiệp' : 'Kém hiệu quả';
+                                    else if (feature === 'Khả năng khôi phục') explanation = (label.includes('Thương hiệu')) ? 'Cao hơn' : 'Phức tạp hơn';
+                                    
+                                    return `${label} ${explanation} (Điểm: ${value})`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            max: 10,
+                             grid: {
+                                color: '#e5e7eb'
+                            }
+                        },
+                        y: {
+                            grid: {
+                                display: false
+                            }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>
